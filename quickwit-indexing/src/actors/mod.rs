@@ -21,7 +21,7 @@ mod indexing_pipeline;
 
 mod garbage_collector;
 mod indexer;
-mod indexing_server;
+mod indexing_service;
 mod packager;
 mod publisher;
 mod uploader;
@@ -29,7 +29,7 @@ mod uploader;
 pub use indexing_pipeline::{
     IndexingPipeline, IndexingPipelineHandler, IndexingPipelineMessage, IndexingPipelineParams,
 };
-pub use indexing_server::{IndexingPipelineId, IndexingServer, IndexingServerClient};
+pub use indexing_service::{IndexingPipelineId, IndexingService, IndexingServiceClient};
 use tantivy::schema::{Field, FieldType};
 mod merge_executor;
 mod merge_planner;

@@ -410,7 +410,7 @@ curl --http2-prior-knowledge "http://127.0.0.1:7280/api/v1/gh-archive/search/str
 
 ### service run indexer
 
-Starts an indexing server that consumes the sources of index IDs passed in `--indexes` argument.
+Starts an indexing service that consumes the sources of index IDs passed in `--indexes` argument.
   
 `quickwit service run indexer [args]`
 

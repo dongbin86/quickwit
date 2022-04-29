@@ -25,7 +25,7 @@ use quickwit_config::{IndexerConfig, SourceConfig};
 use quickwit_metastore::Metastore;
 use quickwit_storage::StorageUriResolver;
 
-use crate::actors::{IndexingPipeline, IndexingPipelineParams, IndexingServer};
+use crate::actors::{IndexingPipeline, IndexingPipelineParams, IndexingService};
 use crate::models::IndexingStatistics;
 pub use crate::split_store::{
     get_tantivy_directory_from_split_bundle, IndexingSplitStore, IndexingSplitStoreParams,
@@ -55,7 +55,7 @@ pub async fn index_data(
     metastore: Arc<dyn Metastore>,
     storage_resolver: StorageUriResolver,
 ) -> anyhow::Result<IndexingStatistics> {
-    let client = IndexingServer::spawn(data_dir_path, indexer_config, metastore, storage_resolver);
+    let client = IndexingService::spawn(data_dir_path, indexer_config, metastore, storage_resolver);
     let pipeline_id = client.spawn_pipeline(index_id, source).await?;
     let pipeline_handle = client.detach_pipeline(&pipeline_id).await?;
     let (exit_status, statistics) = pipeline_handle.join().await;

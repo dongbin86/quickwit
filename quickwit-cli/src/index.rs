@@ -34,7 +34,7 @@ use quickwit_common::{run_checklist, GREEN_COLOR};
 use quickwit_config::{IndexConfig, IndexerConfig, SourceConfig, SourceParams};
 use quickwit_core::{create_index, delete_index, garbage_collect_index, reset_index};
 use quickwit_doc_mapper::tag_pruning::match_tag_field_name;
-use quickwit_indexing::actors::{IndexingPipeline, IndexingServer};
+use quickwit_indexing::actors::{IndexingPipeline, IndexingService};
 use quickwit_indexing::models::IndexingStatistics;
 use quickwit_indexing::source::INGEST_SOURCE_ID;
 use quickwit_metastore::{quickwit_metastore_uri_resolver, IndexMetadata, Split, SplitState};
@@ -776,7 +776,7 @@ pub async fn ingest_docs_cli(args: IngestDocsArgs) -> anyhow::Result<()> {
     let indexer_config = IndexerConfig {
         ..Default::default()
     };
-    let client = IndexingServer::spawn(
+    let client = IndexingService::spawn(
         config.data_dir_path,
         indexer_config,
         metastore,
@@ -857,7 +857,7 @@ pub async fn merge_or_demux_cli(
         .resolve(&config.metastore_uri())
         .await?;
     let storage_resolver = quickwit_storage_uri_resolver().clone();
-    let client = IndexingServer::spawn(
+    let client = IndexingService::spawn(
         config.data_dir_path,
         indexer_config,
         metastore,

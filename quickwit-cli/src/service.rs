@@ -23,7 +23,7 @@ use anyhow::bail;
 use clap::{arg, ArgMatches, Command};
 use quickwit_common::run_checklist;
 use quickwit_common::uri::Uri;
-use quickwit_indexing::actors::IndexingServer;
+use quickwit_indexing::actors::IndexingService;
 use quickwit_metastore::quickwit_metastore_uri_resolver;
 use quickwit_serve::run_searcher;
 use quickwit_storage::quickwit_storage_uri_resolver;
@@ -156,7 +156,7 @@ async fn run_indexer_cli(args: RunIndexerArgs) -> anyhow::Result<()> {
         .resolve(&config.metastore_uri())
         .await?;
     let storage_resolver = quickwit_storage_uri_resolver().clone();
-    let client = IndexingServer::spawn(
+    let client = IndexingService::spawn(
         config.data_dir_path,
         config.indexer_config,
         metastore,
@@ -165,7 +165,7 @@ async fn run_indexer_cli(args: RunIndexerArgs) -> anyhow::Result<()> {
     for index_id in args.index_ids {
         client.spawn_pipelines(index_id).await?;
     }
-    let (exit_status, _) = client.join_server().await;
+    let (exit_status, _) = client.join_service().await;
     if exit_status.is_success() {
         bail!(exit_status)
     }

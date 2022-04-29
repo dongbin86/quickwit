@@ -29,7 +29,7 @@ use quickwit_metastore::{
 };
 use quickwit_storage::{Storage, StorageUriResolver};
 
-use crate::actors::{IndexingServer, IndexingServerClient};
+use crate::actors::{IndexingService, IndexingServiceClient};
 use crate::models::IndexingStatistics;
 
 /// Creates a Test environment.
@@ -39,7 +39,7 @@ use crate::models::IndexingStatistics;
 /// but the construction of the index involves temporary file directory.
 pub struct TestSandbox {
     index_id: String,
-    client: IndexingServerClient,
+    client: IndexingServiceClient,
     doc_mapper: Arc<dyn DocMapper>,
     metastore: Arc<dyn Metastore>,
     storage_resolver: StorageUriResolver,
@@ -82,7 +82,7 @@ impl TestSandbox {
         metastore.create_index(index_meta.clone()).await?;
         let storage_resolver = StorageUriResolver::for_test();
         let storage = storage_resolver.resolve(&index_uri)?;
-        let client = IndexingServer::spawn(
+        let client = IndexingService::spawn(
             temp_dir.path().to_path_buf(),
             indexer_config,
             metastore.clone(),
